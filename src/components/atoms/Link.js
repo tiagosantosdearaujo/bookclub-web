@@ -7,7 +7,12 @@ export const Link = ({ children, ...props }) => (
 );
 
 Link.Action = ({ text, actionText, ...props }) => (
-  <Flex alignItems="center" justifyContent="center">
+  <Flex
+    marginBottom={["0px", "0px", "106px", "24px"]}
+    flexDirection={["column", "row"]}
+    alignItems={["center"]}
+    justifyContent={["flex-end", "center"]}
+  >
     <ChakraLink
       width="auto"
       marginRight="5px"
