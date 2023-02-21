@@ -1,9 +1,39 @@
 import { Flex, Image } from "@chakra-ui/react";
 import { Text, Input, Link, Button } from "components";
 import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export const RegisterScreen = () => {
   const navigate = useNavigate();
+
+  const { handleSubmit, values, handleChange, errors } = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(3, "Nome deve ter ao menos 3 caracteres.")
+        .required("Nome é obrigatório."),
+      email: Yup.string()
+        .email("E-mail inválido")
+        .required("E-mail é obrigatório."),
+      password: Yup.string()
+        .min(6, "Senha deve ter ao menos 6 caracteres")
+        .required("Senha é obrigatório."),
+      confirmPassword: Yup.string()
+        .min(6, "Confirmar a senha deve ter ao menos 6 caracteres")
+        .required("Confirmar a senha é obrigatório.")
+        .oneOf([Yup.ref("password"), null], "Senhas nao sao iguais"),
+    }),
+    onSubmit: (data) => {
+      console.log({ data });
+    },
+  });
+
   return (
     <Flex
       flexDirection={"row"}
@@ -33,23 +63,50 @@ export const RegisterScreen = () => {
               Cadastro
             </Text.ScreenTitle>
             <Input
+              type="text"
+              id="name"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              error={errors.name}
               marginBottom={["6px", "6px", "16px", "24px"]}
               placeholder="Nome completo"
             />
             <Input
+              type="text"
+              id="email"
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+              error={errors.email}
               marginBottom={["6px", "6px", "16px", "24px"]}
               placeholder="email@exemplo.com"
             />
             <Input.Password
+              type="text"
+              id="password"
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              error={errors.password}
               placeholder="Senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
             <Input.Password
+              type="text"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={values.confirmPassword}
+              onChange={handleChange}
+              error={errors.confirmPassword}
               placeholder="Confirmar Senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
 
-            <Button marginBottom={["60px", "60px", "206px", "24px"]}>
+            <Button
+              onClick={handleSubmit}
+              marginBottom={["60px", "60px", "206px", "24px"]}
+            >
               Cadastrar
             </Button>
             <Link.Action

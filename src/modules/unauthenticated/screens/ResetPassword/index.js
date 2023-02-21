@@ -1,9 +1,35 @@
 import { Flex, Image } from "@chakra-ui/react";
 import { Text, Input, Link, Button } from "components";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 export const ResetPasswordScreen = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  const { handleSubmit, values, handleChange, errors } = useFormik({
+    initialValues: {
+      token: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    validationSchema: Yup.object({
+      token: Yup.string()
+        .length(4, "O token deve conter ao menos 4 caracteres.")
+        .required("O token é obrigatório."),
+      newPassword: Yup.string()
+        .min(6, "Senha deve ter ao menos 6 caracteres")
+        .required("Senha é obrigatório."),
+      confirmNewPassword: Yup.string()
+        .min(6, "Confirmar a senha deve ter ao menos 6 caracteres")
+        .required("Confirmar a senha é obrigatório.")
+        .oneOf([Yup.ref("newPassword"), null], "Senhas nao sao iguais"),
+    }),
+    onSubmit: (data) => {
+      console.log({ data });
+      navigate("/");
+    },
+  });
   return (
     <Flex
       flexDirection={"row"}
@@ -36,18 +62,40 @@ export const ResetPasswordScreen = () => {
               Digite o código enviado e uma nova senha nos campos abaixo:
             </Text.ScreenText>
             <Input
+              type="number"
+              id="token"
+              name="token"
+              value={values.token}
+              onChange={handleChange}
+              error={errors.token}
+              maxLenght={4}
               marginBottom={["6px", "6px", "16px", "24px"]}
               placeholder="0000"
             />
             <Input.Password
+              type="text"
+              id="newPassword"
+              name="newPassword"
+              value={values.newPassword}
+              onChange={handleChange}
+              error={errors.newPassword}
               placeholder="Nova Senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
             <Input.Password
+              type="text"
+              id="confirmNewPassword"
+              name="confirmNewPassword"
+              value={values.confirmNewPassword}
+              onChange={handleChange}
+              error={errors.confirmNewPassword}
               placeholder="Confirmar nova senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
-            <Button marginBottom={["60px", "60px", "206px", "24px"]}>
+            <Button
+              onClick={handleSubmit}
+              marginBottom={["60px", "60px", "206px", "24px"]}
+            >
               Salvar
             </Button>
             <Link.Action
