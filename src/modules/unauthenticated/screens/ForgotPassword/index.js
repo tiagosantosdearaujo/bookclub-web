@@ -1,30 +1,9 @@
 import { Flex, Image } from "@chakra-ui/react";
 import { Text, Input, Link, Button } from "components";
 import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
-export const LoguinScreen = () => {
+export const ForgotPasswordScreen = () => {
   const navigate = useNavigate();
-
-  const { handleSubmit, values, handleChange, errors } = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("E-mail inválido")
-        .required("E-mail é obrigatório."),
-      password: Yup.string()
-        .min(6, "Senha deve ter ao menos 6 caracteres")
-        .required("Senha é obrigatório."),
-    }),
-    onSubmit: (data) => {
-      console.log({ data });
-    },
-  });
-
   return (
     <Flex
       flexDirection={"row"}
@@ -51,45 +30,26 @@ export const LoguinScreen = () => {
           />
           <Flex flexDirection={"column"} width="100%" maxWidth="416px">
             <Text.ScreenTitle marginBottom={["6px", "6px", "20px", "24px"]}>
-              Loguin
+              Esqueceu senha
             </Text.ScreenTitle>
+            <Text.ScreenText marginBottom={["6px", "6px", "20px", "24px"]}>
+              Digite abaixo seu e-mail que enviaremos um código de recuperação
+              de senha:
+            </Text.ScreenText>
             <Input
-              type="email"
-              id="email"
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              error={errors.email}
-              placeholder="email@exemplo.com"
               marginBottom={["6px", "6px", "16px", "24px"]}
+              placeholder="email@exemplo.com"
             />
-            <Input.Password
-              id="password"
-              name="password"
-              value={values.password}
-              placeholder="Senha"
-              onChange={handleChange}
-              error={errors.password}
-              marginBottom={["6px", "6px", "8px", "24px"]}
-            />
-            <Link
-              onClick={() => navigate("./forgot-password")}
-              textAlign="right"
-              width="100%"
-              marginBottom={["6px", "6px", "47px", "24px"]}
-            >
-              Esqueceu sua senha ?
-            </Link>
             <Button
-              onClick={handleSubmit}
+              onClick={() => navigate("/reset-password")}
               marginBottom={["60px", "60px", "206px", "24px"]}
             >
-              Entrar
+              Avançar
             </Button>
             <Link.Action
-              onClick={() => navigate("./signup")}
-              text="Não possui uma conta ?"
-              actionText="Cadastre-se aqui"
+              onClick={() => navigate("/")}
+              text="Lembrou da senha ?"
+              actionText="Faça login aqui"
             />
           </Flex>
         </Flex>

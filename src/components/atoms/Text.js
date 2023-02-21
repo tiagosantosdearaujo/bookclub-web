@@ -17,15 +17,15 @@ Text.ScreenTitle = ({ children, ...props }) => (
 
 Text.ScreenTitle.displayName = "ScreenTitle";
 
-// Text.ScreenTitleBold = ({ children, ...props }) => (
-//   <ChakraText
-//     color="brand.black"
-//     fontWeight="extrabold"
-//     fontSize="16px"
-//     {...props}
-//   >
-//     {children}
-//   </ChakraText>
-// );
+Text.ScreenText = ({ children, ...props }) => (
+  <ChakraText
+    // color="brand.black"
+    // fontWeight="extrabold"
+    // fontSize="16px"
+    {...props}
+  >
+    {children}
+  </ChakraText>
+);
 
-// Text.ScreenTitleBold.displayName = "ScreenTitleBold";
+Text.ScreenText.displayName = "ScreenText";
