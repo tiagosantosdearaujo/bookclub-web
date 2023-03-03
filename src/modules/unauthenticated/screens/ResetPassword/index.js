@@ -1,35 +1,65 @@
-import { Flex, Image } from "@chakra-ui/react";
-import { Text, Input, Link, Button } from "components";
-import { useNavigate } from "react-router-dom";
+import { Flex, Image, useToast } from "@chakra-ui/react";
+import { Text, Input, Button, Link } from "components";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useMutation } from "react-query";
+import { resetPasswordCall } from "services/api/requests";
 
 export const ResetPasswordScreen = () => {
   const navigate = useNavigate();
+  const toast = useToast();
+  const [searchParams] = useSearchParams();
+
+  const mutation = useMutation((data) => resetPasswordCall(data), {
+    onError: (error) => {
+      toast({
+        title: "Falha na requisição.",
+        description:
+          error?.response?.data?.error || "Por favor, tente novamente.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Senha salva com sucesso!",
+        status: "success",
+        duration: 6000,
+        isClosable: true,
+      });
+      navigate("/");
+    },
+  });
 
   const { handleSubmit, values, handleChange, errors } = useFormik({
     initialValues: {
       token: "",
-      newPassword: "",
-      confirmNewPassword: "",
+      password: "",
+      confirmPassword: "",
     },
     validationSchema: Yup.object({
       token: Yup.string()
-        .length(4, "O token deve conter ao menos 4 caracteres.")
-        .required("O token é obrigatório."),
-      newPassword: Yup.string()
-        .min(6, "Senha deve ter ao menos 6 caracteres")
+        .length(6, "Token deve conter 6 caracteres.")
+        .required("Token é obrigatório."),
+      password: Yup.string()
+        .min(6, "Senha deve ter ao menos 6 caracteres.")
         .required("Senha é obrigatório."),
-      confirmNewPassword: Yup.string()
-        .min(6, "Confirmar a senha deve ter ao menos 6 caracteres")
+      confirmPassword: Yup.string()
+        .min(6, "Confirmar a senha deve ter ao menos 6 caracteres.")
         .required("Confirmar a senha é obrigatório.")
-        .oneOf([Yup.ref("newPassword"), null], "Senhas nao sao iguais"),
+        .oneOf([Yup.ref("password"), null], "Senhas não são iguais."),
     }),
     onSubmit: (data) => {
-      console.log({ data });
-      navigate("/");
+      mutation.mutate({
+        email: searchParams.get("email"),
+        token: data.token,
+        password: data.password,
+      });
     },
   });
+
   return (
     <Flex
       flexDirection={"row"}
@@ -62,37 +92,37 @@ export const ResetPasswordScreen = () => {
               Digite o código enviado e uma nova senha nos campos abaixo:
             </Text.ScreenText>
             <Input
-              type="number"
               id="token"
               name="token"
               value={values.token}
               onChange={handleChange}
               error={errors.token}
-              maxLenght={4}
+              maxLength={6}
               marginBottom={["6px", "6px", "16px", "24px"]}
-              placeholder="0000"
+              placeholder="000000"
             />
             <Input.Password
               type="text"
-              id="newPassword"
-              name="newPassword"
-              value={values.newPassword}
+              id="password"
+              name="password"
+              value={values.password}
               onChange={handleChange}
-              error={errors.newPassword}
+              error={errors.password}
               placeholder="Nova Senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
             <Input.Password
               type="text"
-              id="confirmNewPassword"
-              name="confirmNewPassword"
-              value={values.confirmNewPassword}
+              id="confirmPassword"
+              name="confirmPassword"
+              value={values.confirmPassword}
               onChange={handleChange}
-              error={errors.confirmNewPassword}
+              error={errors.confirmPassword}
               placeholder="Confirmar nova senha"
               marginBottom={["6px", "6px", "8px", "24px"]}
             />
             <Button
+              isLoading={mutation.isLoading}
               onClick={handleSubmit}
               marginBottom={["60px", "60px", "206px", "24px"]}
             >
