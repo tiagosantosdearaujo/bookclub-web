@@ -15,6 +15,7 @@ module.exports = {
     "react/prop-types": "off",
     "react/no-unescaped-entities": "off",
     "multiline-ternary": "off",
+    // camelcase: off,
   },
   settings: {
     "import/resolver": {
